@@ -252,12 +252,10 @@
     <a href="#" class="admin-link" id="adminLink">Admin</a>
 
     <script>
-        window.env = {
-    SUPABASE_ANON_KEY: '%%SUPABASE_ANON_KEY%%'
-                 };
+        
         // Initialize Supabase client at the top of the script
         const supabaseUrl = 'https://hvlyrcfscfniroukfzyi.supabase.co';
-        const supabaseKey = window.env.SUPABASE_ANON_KEY;
+        const supabaseKey = process.env.SUPABASE_ANON_KEY;
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         // Check for stored name when page loads
