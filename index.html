@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic 8-Ball</title>
+    <title>Magic 8-Ball, kung saan mo maari malaman ang iyong sagot sa katanungan mo (satire or not)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -96,6 +96,55 @@
             font-size: 0.8em;
             color: #666;
         }
+        .admin-link {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            color: #ccc;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .admin-panel {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .admin-form input {
+            width: 60%;
+            margin: 5px;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .admin-table th, .admin-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .admin-table th {
+            background-color: #f2f2f2;
+        }
+        .admin-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .log-container {
+            max-height: 400px;
+            overflow-y: auto;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -112,19 +161,61 @@
         <div id="answer"></div>
         <div class="status" id="status">Ready to answer your question</div>
     </div>
+    
+    <div class="admin-panel" id="adminPanel">
+        <h2>Admin Login</h2>
+        <div class="admin-form" id="loginForm">
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+        </div>
+        
+        <div class="admin-content" id="adminContent" style="display: none;">
+            <h2>Request Logs</h2>
+            <div class="log-container">
+                <table class="admin-table" id="logTable">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>IP Address</th>
+                            <th>Question</th>
+                            <th>Answer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logTableBody">
+                        <!-- Logs will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <a href="#" class="admin-link" id="adminLink">Admin</a>
 
     <script>
         // Magic 8-Ball responses for fallback
         const localAnswers = [
-            "It is certain", "It is decidedly so", "Without a doubt", 
-            "Yes definitely", "You may rely on it", "As I see it, yes", 
-            "Most likely", "Outlook good", "Yes", "Signs point to yes", 
-            "Reply hazy, try again", "Ask again later", 
-            "Better not tell you now", "Cannot predict now", 
-            "Concentrate and ask again", "Don't count on it", 
-            "My reply is no", "My sources say no", 
-            "Outlook not so good", "Very doubtful"
+            "It is certain",
         ];
+        
+        // Admin credentials
+        const adminUser = "admin";
+        const adminPass = "magic8ball";
+        
+        // Store logs in localStorage
+        let requestLogs = JSON.parse(localStorage.getItem('requestLogs')) || [];
+        
+        // Function to get client IP address
+        async function getClientIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error("Error getting IP address:", error);
+                return "Unknown IP";
+            }
+        }
         
         async function getAnswer() {
             const question = document.getElementById('question').value.trim();
@@ -173,6 +264,9 @@
                     // Show full answer below
                     answerDiv.textContent = answer;
                     statusDiv.textContent = "The spirits have spoken";
+                    
+                    // Log the request
+                    logRequest(question, answer);
                 } else {
                     throw new Error("Invalid response from API");
                 }
@@ -187,7 +281,80 @@
                 answerWindow.textContent = fallbackAnswer.split(' ')[0];
                 answerDiv.textContent = fallbackAnswer;
                 statusDiv.textContent = "Using local magic (API connection failed)";
+                
+                // Log the fallback request
+                logRequest(question, fallbackAnswer);
             }
+        }
+        
+        // Function to log requests with IP address
+        async function logRequest(question, answer) {
+            const ip = await getClientIP();
+            const timestamp = new Date().toISOString();
+            
+            const logEntry = {
+                timestamp: timestamp,
+                ip: ip,
+                question: question,
+                answer: answer
+            };
+            
+            requestLogs.push(logEntry);
+            localStorage.setItem('requestLogs', JSON.stringify(requestLogs));
+            
+            // Update the log table if admin panel is open
+            if (document.getElementById('adminContent').style.display === 'block') {
+                updateLogTable();
+            }
+        }
+        
+        // Admin link click handler
+        document.getElementById('adminLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('adminPanel').style.display = 'block';
+        });
+        
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === adminUser && password === adminPass) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                updateLogTable();
+            } else {
+                alert('Invalid username or password');
+            }
+        }
+        
+        // Update log table
+        function updateLogTable() {
+            const tableBody = document.getElementById('logTableBody');
+            tableBody.innerHTML = '';
+            
+            requestLogs.forEach(log => {
+                const row = document.createElement('tr');
+                
+                const timestampCell = document.createElement('td');
+                timestampCell.textContent = new Date(log.timestamp).toLocaleString();
+                
+                const ipCell = document.createElement('td');
+                ipCell.textContent = log.ip;
+                
+                const questionCell = document.createElement('td');
+                questionCell.textContent = log.question;
+                
+                const answerCell = document.createElement('td');
+                answerCell.textContent = log.answer;
+                
+                row.appendChild(timestampCell);
+                row.appendChild(ipCell);
+                row.appendChild(questionCell);
+                row.appendChild(answerCell);
+                
+                tableBody.appendChild(row);
+            });
         }
     </script>
 </body>
