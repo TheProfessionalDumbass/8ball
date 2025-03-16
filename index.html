@@ -3,154 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic 8-Ball, kung saan mo maari malaman ang iyong sagot sa katanungan mo (satire or not)</title>
+    <title>Magic 8-Ball</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
+            background-color: #f4f4f4;
             margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 600px;
             padding: 20px;
-            background-color: #f0f0f0;
+        }
+        
+        .greeting-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 100%;
-        }
-        .magic-ball {
-            width: 150px;
-            height: 150px;
-            background-color: #000;
-            border-radius: 50%;
-            margin: 20px auto;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
+            z-index: 1000;
+            color: white;
         }
-        .answer-window {
-            width: 70px;
-            height: 70px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            color: #000;
-            position: relative;
-            z-index: 1;
+        
+        .greeting-content {
+            background-color: #222;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 80%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
-        #answer {
-            margin-top: 20px;
-            font-size: 1.5em;
-            color: #333;
-            font-weight: bold;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        
+        .greeting-content h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #00bcd4;
         }
-        input, button {
-            padding: 10px;
-            margin: 10px 0;
+        
+        .greeting-content input {
+            padding: 12px;
+            width: 80%;
+            border: none;
             border-radius: 5px;
-            border: 1px solid #ccc;
+            font-size: 16px;
+            margin-bottom: 20px;
         }
-        button {
-            background-color: #4CAF50;
+        
+        .greeting-content button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #00bcd4, #2196f3);
             color: white;
             border: none;
+            border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: transform 0.2s;
         }
-        button:hover {
-            background-color: #45a049;
+        
+        .greeting-content button:hover {
+            transform: scale(1.05);
         }
-        input {
-            width: 80%;
+        
+        /* Your existing styles */
+        .magic-ball {
+            width: 200px;
+            height: 200px;
+            background-color: #000;
+            border-radius: 50%;
+            margin: 30px auto;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+        
+        .answer-window {
+            width: 80px;
+            height: 80px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
         .shake {
             animation: shake 0.5s;
         }
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-            100% { transform: translateX(0); }
-        }
-        .status {
+        
+        #answer {
             margin-top: 20px;
-            font-size: 0.8em;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+        
+        .status {
+            margin-top: 10px;
+            font-style: italic;
             color: #666;
         }
-        .admin-link {
-            position: fixed;
-            bottom: 5px;
-            right: 5px;
-            color: #ccc;
-            font-size: 12px;
-            text-decoration: none;
-        }
-        .admin-panel {
-            display: none;
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            max-width: 800px;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .admin-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .admin-form input {
-            width: 60%;
+        
+        input[type="text"], button {
+            padding: 10px;
             margin: 5px;
         }
+        
+        button {
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .admin-link {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: #999;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            overflow: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .admin-panel h2 {
+            color: white;
+        }
+        
+        .admin-form input {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
         .admin-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            color: white;
         }
+        
         .admin-table th, .admin-table td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+        
         .admin-table th {
-            background-color: #f2f2f2;
+            background-color: #333;
         }
-        .admin-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .log-container {
-            max-height: 400px;
-            overflow-y: auto;
-            width: 100%;
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            50% { transform: translateX(10px) rotate(5deg); }
+            75% { transform: translateX(-10px) rotate(-5deg); }
+            100% { transform: translateX(0); }
         }
     </style>
+    <!-- Include Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Magic 8-Ball, kung saan mo malalaman ang iyong sagot sa mga katanungan 'nyo</h1>
-        <p>Ask a question, then may sagot kana👌</p>
+    <!-- Greeting Screen -->
+    <div class="greeting-screen" id="greetingScreen">
+        <div class="greeting-content">
+            <h2>Welcome to the Magic 8-Ball</h2>
+            <p>Before we begin, please tell us your name:</p>
+            <input type="text" id="userName" placeholder="Enter your name">
+            <button onclick="saveUserName()">Enter the Mystical Realm</button>
+        </div>
+    </div>
+
+    <div class="container" id="mainContent" style="display: none;">
+        <h1>Magic 8-Ball</h1>
+        <p>Hello, <span id="userGreeting">Seeker</span>! Ask a question, then may sagot kana👌</p>
         <input type="text" id="question" placeholder="Type your question here">
         <button onclick="getAnswer()">Ask the 8-Ball</button>
         
@@ -193,17 +252,87 @@
     <a href="#" class="admin-link" id="adminLink">Admin</a>
 
     <script>
+        window.env = {
+    SUPABASE_ANON_KEY: '%%SUPABASE_ANON_KEY%%'
+                 };
+        // Initialize Supabase client at the top of the script
+        const supabaseUrl = 'https://hvlyrcfscfniroukfzyi.supabase.co';
+        const supabaseKey = window.env.SUPABASE_ANON_KEY;
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Check for stored name when page loads
+        window.onload = function() {
+            const storedName = localStorage.getItem('magic8ball_username');
+            if (storedName) {
+                // If name exists, skip greeting and go straight to main content
+                document.getElementById('userGreeting').textContent = storedName;
+                document.getElementById('greetingScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
+        };
+        
+        // Function to save user name and show the main content
+        function saveUserName() {
+            const nameInput = document.getElementById('userName').value.trim();
+            if (!nameInput) {
+                alert("Please enter your name to continue");
+                return;
+            }
+            
+            // Store name in local storage for future visits
+            localStorage.setItem('magic8ball_username', nameInput);
+            
+            // Use name for greeting
+            document.getElementById('userGreeting').textContent = nameInput;
+            
+            // Show main content and hide greeting screen
+            document.getElementById('greetingScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            
+            // Display a special greeting in the 8-ball
+            const answerWindow = document.getElementById('window');
+            const answerDiv = document.getElementById('answer');
+            const statusDiv = document.getElementById('status');
+            const ball = document.getElementById('ball');
+            
+            // Add shake animation
+            ball.classList.add('shake');
+            
+            setTimeout(() => {
+                ball.classList.remove('shake');
+                answerWindow.textContent = "Hi!";
+                answerDiv.textContent = `Welcome to Magic 8-Ball, ${nameInput}! I'm ready to answer your questions.`;
+                statusDiv.textContent = "The spirits are pleased to meet you";
+            }, 500);
+        }
+
         // Magic 8-Ball responses for fallback
         const localAnswers = [
             "It is certain",
+            "It is decidedly so",
+            "Without a doubt",
+            "Yes definitely",
+            "You may rely on it",
+            "As I see it, yes",
+            "Most likely",
+            "Outlook good",
+            "Yes",
+            "Signs point to yes",
+            "Reply hazy, try again",
+            "Ask again later",
+            "Better not tell you now",
+            "Cannot predict now",
+            "Concentrate and ask again",
+            "Don't count on it",
+            "My reply is no",
+            "My sources say no",
+            "Outlook not so good",
+            "Very doubtful"
         ];
         
         // Admin credentials
         const adminUser = "admin";
         const adminPass = "magic8ball";
-        
-        // Store logs in localStorage
-        let requestLogs = JSON.parse(localStorage.getItem('requestLogs')) || [];
         
         // Function to get client IP address
         async function getClientIP() {
@@ -290,22 +419,67 @@
         // Function to log requests with IP address
         async function logRequest(question, answer) {
             const ip = await getClientIP();
-            const timestamp = new Date().toISOString();
+            const userAgent = navigator.userAgent;
+            const userName = localStorage.getItem('magic8ball_username') || 'Anonymous';
             
-            const logEntry = {
-                timestamp: timestamp,
-                ip: ip,
-                question: question,
-                answer: answer
-            };
-            
-            requestLogs.push(logEntry);
-            localStorage.setItem('requestLogs', JSON.stringify(requestLogs));
+            try {
+                const { data, error } = await supabaseClient
+                    .from('magic_8ball_logs')
+                    .insert([
+                        { 
+                            ip_address: ip, 
+                            question: question, 
+                            answer: answer, 
+                            user_agent: userAgent,
+                            user_name: userName
+                        }
+                    ]);
+                
+                if (error) {
+                    console.error("Error logging request:", error);
+                    
+                    // Store in local storage as backup if Supabase insert fails
+                    storeLogLocally(ip, question, answer, userAgent);
+                } else {
+                    console.log("Request logged successfully:", data);
+                }
+            } catch (err) {
+                console.error("Exception logging request:", err);
+                // Store in local storage as backup
+                storeLogLocally(ip, question, answer, userAgent);
+            }
             
             // Update the log table if admin panel is open
             if (document.getElementById('adminContent').style.display === 'block') {
                 updateLogTable();
             }
+        }
+        
+        // Function to store logs locally when Supabase fails
+        function storeLogLocally(ip, question, answer, userAgent) {
+            const timestamp = new Date().toISOString();
+            const logEntry = {
+                created_at: timestamp,
+                ip_address: ip,
+                question: question,
+                answer: answer,
+                user_agent: userAgent
+            };
+            
+            // Get existing logs from local storage
+            let localLogs = JSON.parse(localStorage.getItem('magic_8ball_logs') || '[]');
+            
+            // Add new log entry
+            localLogs.push(logEntry);
+            
+            // Store back in local storage (limit to last 100 entries to avoid storage issues)
+            if (localLogs.length > 100) {
+                localLogs = localLogs.slice(-100);
+            }
+            
+            localStorage.setItem('magic_8ball_logs', JSON.stringify(localLogs));
+            
+            console.log("Log stored locally due to Supabase error");
         }
         
         // Admin link click handler
@@ -329,30 +503,87 @@
         }
         
         // Update log table
-        function updateLogTable() {
+        async function updateLogTable() {
             const tableBody = document.getElementById('logTableBody');
             tableBody.innerHTML = '';
             
-            requestLogs.forEach(log => {
+            try {
+                // Try to get logs from Supabase first
+                const { data, error } = await supabaseClient
+                    .from('magic_8ball_logs')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                // If Supabase returns data successfully, use it
+                if (!error && data) {
+                    displayLogs(data);
+                    
+                    // Add a note at the top of the admin panel
+                    const statusNote = document.createElement('div');
+                    statusNote.textContent = "Displaying database logs";
+                    statusNote.style.marginBottom = "10px";
+                    statusNote.style.color = "green";
+                    tableBody.parentNode.insertBefore(statusNote, tableBody);
+                    
+                    return;
+                } else {
+                    console.error("Error fetching logs from Supabase:", error);
+                }
+            } catch (err) {
+                console.error("Exception fetching logs from Supabase:", err);
+            }
+            
+            // Fall back to local storage logs if Supabase fails
+            const localLogs = JSON.parse(localStorage.getItem('magic_8ball_logs') || '[]');
+            if (localLogs.length > 0) {
+                // Sort local logs by timestamp (newest first)
+                localLogs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                displayLogs(localLogs);
+                
+                // Add a note indicating these are from local storage
+                const statusNote = document.createElement('div');
+                statusNote.textContent = "⚠️ Displaying local logs (database unavailable)";
+                statusNote.style.marginBottom = "10px";
+                statusNote.style.color = "orange";
+                tableBody.parentNode.insertBefore(statusNote, tableBody);
+            } else {
+                const noLogsRow = document.createElement('tr');
+                const noLogsCell = document.createElement('td');
+                noLogsCell.colSpan = 4;
+                noLogsCell.textContent = "No logs available";
+                noLogsCell.style.textAlign = "center";
+                noLogsRow.appendChild(noLogsCell);
+                tableBody.appendChild(noLogsRow);
+            }
+        }
+        
+        // Helper function to display logs in the table
+        function displayLogs(logs) {
+            const tableBody = document.getElementById('logTableBody');
+            
+            logs.forEach(log => {
                 const row = document.createElement('tr');
                 
                 const timestampCell = document.createElement('td');
-                timestampCell.textContent = new Date(log.timestamp).toLocaleString();
+                timestampCell.textContent = new Date(log.created_at).toLocaleString();
                 
                 const ipCell = document.createElement('td');
-                ipCell.textContent = log.ip;
+                ipCell.textContent = log.ip_address;
                 
                 const questionCell = document.createElement('td');
                 questionCell.textContent = log.question;
                 
                 const answerCell = document.createElement('td');
                 answerCell.textContent = log.answer;
+
+                const usernameCell = document.createElement('td');
+                usernameCell.textContent = log.user_name;
                 
                 row.appendChild(timestampCell);
                 row.appendChild(ipCell);
                 row.appendChild(questionCell);
                 row.appendChild(answerCell);
-                
+                row.appendChild(usernameCell);
                 tableBody.appendChild(row);
             });
         }
