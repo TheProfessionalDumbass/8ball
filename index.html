@@ -255,7 +255,7 @@
         
         // Initialize Supabase client at the top of the script
         const supabaseUrl = 'https://hvlyrcfscfniroukfzyi.supabase.co';
-        const supabaseKey = process.env.SUPABASE_ANON_KEY;
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2bHlyY2ZzY2ZuaXJvdWtmenlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIxMzE0OTcsImV4cCI6MjA1NzcwNzQ5N30.n0NsZQeV8ONwPTe12cw2qJBw4Xu_lbRkI9g1oRYysdg";
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         // Check for stored name when page loads
