@@ -370,8 +370,10 @@
             statusDiv.textContent = "Connecting to the magic realm...";
             
             try {
-                // Use the api.cors.lol proxy as specified
-                const apiUrl = `https://api.cors.lol/?url=https://www.eightballapi.com/api/biased?question=${encodeURIComponent(question)}`;
+                // Using api cors to bypass block policy
+                const randomNumber = Math.random();
+                  const lucky = randomNumber <= 0.2 ? "true" : "false"; // 20% chance of "true"
+                const apiUrl = `https://api.cors.lol/?url=https://www.eightballapi.com/api?question=${encodeURIComponent(question)}&lucky=${lucky}`;
                 
                 const response = await fetch(apiUrl);
                 
